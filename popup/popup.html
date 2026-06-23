@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeetCode → GitHub Sync</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-text">LC → GH Sync</span>
+      </div>
+      <div id="status-dot" class="status-dot" title="Not configured"></div>
+    </header>
+
+    <main>
+      <!-- GitHub Section -->
+      <section class="section">
+        <h2 class="section-label">GitHub</h2>
+
+        <div class="field">
+          <label for="github-token">Personal Access Token</label>
+          <div class="input-wrap">
+            <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+            <button class="eye-btn" id="toggle-token" title="Show/hide token">
+              <svg id="eye-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <span class="hint">Needs <code>repo</code> scope. <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank">Create one ↗</a></span>
+        </div>
+
+        <div class="field">
+          <label for="github-repo">Repository</label>
+          <input type="text" id="github-repo" placeholder="username/leetcode-solutions" />
+        </div>
+
+        <div class="field">
+          <label for="github-branch">Branch</label>
+          <input type="text" id="github-branch" placeholder="main" />
+        </div>
+      </section>
+
+      <!-- AI Section -->
+      <section class="section">
+        <h2 class="section-label">AI Explanation</h2>
+
+        <div class="field">
+          <label>Provider</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="ai-provider" value="gemini" />
+              <span class="radio-label">
+                <span class="provider-name">Gemini Flash</span>
+                <span class="provider-tag free">Free</span>
+              </span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="ai-provider" value="claude" />
+              <span class="radio-label">
+                <span class="provider-name">Claude Haiku</span>
+                <span class="provider-tag paid">Paid</span>
+              </span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="ai-provider" value="openai" />
+              <span class="radio-label">
+                <span class="provider-name">GPT-4o Mini</span>
+                <span class="provider-tag paid">Paid</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Gemini key -->
+        <div class="field ai-key-field" id="field-gemini">
+          <label for="gemini-key">Gemini API Key</label>
+          <input type="password" id="gemini-key" placeholder="AIza…" autocomplete="off" />
+          <span class="hint"><a href="https://aistudio.google.com/app/apikey" target="_blank">Get free key from AI Studio ↗</a></span>
+        </div>
+
+        <!-- Claude key -->
+        <div class="field ai-key-field hidden" id="field-claude">
+          <label for="claude-key">Anthropic API Key</label>
+          <input type="password" id="claude-key" placeholder="sk-ant-…" autocomplete="off" />
+          <span class="hint"><a href="https://console.anthropic.com/" target="_blank">Get key from Anthropic Console ↗</a></span>
+        </div>
+
+        <!-- OpenAI key -->
+        <div class="field ai-key-field hidden" id="field-openai">
+          <label for="openai-key">OpenAI API Key</label>
+          <input type="password" id="openai-key" placeholder="sk-…" autocomplete="off" />
+          <span class="hint"><a href="https://platform.openai.com/api-keys" target="_blank">Get key from OpenAI Platform ↗</a></span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div id="save-feedback" class="save-feedback"></div>
+      <button id="save-btn" class="save-btn">Save settings</button>
+    </footer>
+
+    <!-- Recent activity log -->
+    <section class="log-section" id="log-section">
+      <h2 class="section-label">Recent activity</h2>
+      <div id="activity-log" class="activity-log">
+        <p class="empty-log">No submissions saved yet.</p>
+      </div>
+      <button class="clear-log-btn" id="clear-log">Clear</button>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
