@@ -45,60 +45,10 @@
           <label for="github-branch">Branch</label>
           <input type="text" id="github-branch" placeholder="main" />
         </div>
+
+        <button id="test-btn" class="test-btn">Test connection</button>
       </section>
 
-      <!-- AI Section -->
-      <section class="section">
-        <h2 class="section-label">AI Explanation</h2>
-
-        <div class="field">
-          <label>Provider</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="ai-provider" value="gemini" />
-              <span class="radio-label">
-                <span class="provider-name">Gemini Flash</span>
-                <span class="provider-tag free">Free</span>
-              </span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="ai-provider" value="claude" />
-              <span class="radio-label">
-                <span class="provider-name">Claude Haiku</span>
-                <span class="provider-tag paid">Paid</span>
-              </span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="ai-provider" value="openai" />
-              <span class="radio-label">
-                <span class="provider-name">GPT-4o Mini</span>
-                <span class="provider-tag paid">Paid</span>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Gemini key -->
-        <div class="field ai-key-field" id="field-gemini">
-          <label for="gemini-key">Gemini API Key</label>
-          <input type="password" id="gemini-key" placeholder="AIza…" autocomplete="off" />
-          <span class="hint"><a href="https://aistudio.google.com/app/apikey" target="_blank">Get free key from AI Studio ↗</a></span>
-        </div>
-
-        <!-- Claude key -->
-        <div class="field ai-key-field hidden" id="field-claude">
-          <label for="claude-key">Anthropic API Key</label>
-          <input type="password" id="claude-key" placeholder="sk-ant-…" autocomplete="off" />
-          <span class="hint"><a href="https://console.anthropic.com/" target="_blank">Get key from Anthropic Console ↗</a></span>
-        </div>
-
-        <!-- OpenAI key -->
-        <div class="field ai-key-field hidden" id="field-openai">
-          <label for="openai-key">OpenAI API Key</label>
-          <input type="password" id="openai-key" placeholder="sk-…" autocomplete="off" />
-          <span class="hint"><a href="https://platform.openai.com/api-keys" target="_blank">Get key from OpenAI Platform ↗</a></span>
-        </div>
-      </section>
     </main>
 
     <footer>

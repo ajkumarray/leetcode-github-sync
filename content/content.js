@@ -262,10 +262,16 @@
   }
 
   function getDifficulty() {
-    const el = [...document.querySelectorAll("*")].find(
-      el => ["Easy", "Medium", "Hard"].includes(el.innerText?.trim()) && el.children.length === 0
-    );
-    return el?.innerText?.trim() || "Unknown";
+    const difficulties = ["Easy", "Medium", "Hard"];
+    for (const el of document.querySelectorAll('[class*="difficulty"], [class*="Difficulty"]')) {
+      const text = el.innerText?.trim();
+      if (difficulties.includes(text)) return text;
+    }
+    const scope = document.querySelector("main") || document.body;
+    for (const el of scope.querySelectorAll("span, div")) {
+      if (el.children.length === 0 && difficulties.includes(el.innerText?.trim())) return el.innerText.trim();
+    }
+    return "Unknown";
   }
 
   function getTags() {
@@ -287,13 +293,28 @@
   }
 
   function getCodeFromEditor() {
+    // Monaco JS API — gets full content, not just visible lines
     try {
-      const lines = document.querySelectorAll(".view-line");
-      if (lines.length > 0) return [...lines].map(l => l.innerText).join("\n");
+      if (window.monaco?.editor) {
+        for (const ed of (window.monaco.editor.getEditors?.() || [])) {
+          const val = ed.getModel?.()?.getValue?.();
+          if (val?.trim()) return val;
+        }
+        for (const model of window.monaco.editor.getModels()) {
+          const val = model.getValue();
+          if (val?.trim()) return val;
+        }
+      }
     } catch (_) {}
+    // CodeMirror (older LeetCode)
     try {
       const cm = document.querySelector(".CodeMirror");
       if (cm?.CodeMirror) return cm.CodeMirror.getValue();
+    } catch (_) {}
+    // Last resort: visible lines only (incomplete for long files)
+    try {
+      const lines = document.querySelectorAll(".view-line");
+      if (lines.length > 0) return [...lines].map(l => l.innerText).join("\n");
     } catch (_) {}
     return "";
   }

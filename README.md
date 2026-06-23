@@ -9,8 +9,7 @@ Every time you get an **Accepted** verdict on LeetCode, the extension:
 1. Detects the accepted submission automatically
 2. Creates a folder for the problem (if it doesn't exist yet) with a `README.md` containing the problem description
 3. Saves your solution code in the correct language file
-4. Generates a detailed `solution.md` explanation using AI (approach, complexity, key concepts)
-5. On re-submissions, creates versioned files (`solution_v2.py`, `solution_v2.md`, etc.)
+4. On re-submissions, creates versioned files (`solution_v2.py`, `solution_v3.py`, etc.)
 
 ### Repository structure
 
@@ -19,15 +18,11 @@ Every time you get an **Accepted** verdict on LeetCode, the extension:
   📁 two-sum/
     📄 README.md              ← problem description, difficulty, tags (created once)
     📄 solution.py            ← first accepted submission
-    📄 solution.md            ← AI explanation for solution.py
     📄 solution_v2.js         ← second attempt (different language)
-    📄 solution_v2.md         ← AI explanation for solution_v2.js
     📄 solution_v3.py         ← third attempt (back to Python)
-    📄 solution_v3.md         ← AI explanation for solution_v3.py
   📁 valid-parentheses/
     📄 README.md
     📄 solution.py
-    📄 solution.md
 ```
 
 ---
@@ -53,16 +48,6 @@ Click the extension icon to open settings:
 - **Repository** — Your target repo in `username/repo-name` format (must already exist)
 - **Branch** — Default is `main`
 
-### AI Provider (for explanation generation)
-
-| Provider | Model | Cost |
-|---|---|---|
-| **Gemini Flash** ✅ Recommended | `gemini-1.5-flash` | **Free** (1,500 req/day via AI Studio) |
-| Claude Haiku | `claude-haiku-4-5` | ~$0.0002/solution |
-| GPT-4o Mini | `gpt-4o-mini` | ~$0.0003/solution |
-
-**Get a free Gemini key:** [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-
 ---
 
 ## How it works
@@ -80,9 +65,7 @@ Background worker:
   ├── Lists existing files in problems/{slug}/
   ├── Determines version number (v1, v2, v3…)
   ├── Creates README.md (first time only)
-  ├── Calls AI API → generates explanation markdown
-  ├── Uploads solution file to GitHub
-  └── Uploads explanation .md to GitHub
+  └── Uploads solution file to GitHub
         ↓
 Toast notification: "🎉 Saved to GitHub!"
 ```
@@ -105,9 +88,6 @@ Python, JavaScript, TypeScript, Java, C++, C, C#, Go, Rust, Kotlin, Swift, Scala
 
 **"GitHub write error: 422"**
 → The branch name is wrong. Check the branch field in settings.
-
-**Explanation says "Could not generate explanation"**
-→ Your AI API key may be invalid or the free quota is exceeded (Gemini: 1,500/day).
 
 **No toast appears after submission**
 → The extension may not have loaded. Refresh the LeetCode page and try again.

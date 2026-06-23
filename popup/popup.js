@@ -1,6 +1,6 @@
 // popup/popup.js
 
-const KEYS = ["githubToken", "githubRepo", "githubBranch", "aiProvider", "geminiKey", "claudeKey", "openaiKey"];
+const KEYS = ["githubToken", "githubRepo", "githubBranch"];
 
 const $ = (id) => document.getElementById(id);
 
@@ -10,29 +10,8 @@ chrome.storage.sync.get(KEYS, (data) => {
   $("github-token").value = data.githubToken || "";
   $("github-repo").value = data.githubRepo || "";
   $("github-branch").value = data.githubBranch || "main";
-  $("gemini-key").value = data.geminiKey || "";
-  $("claude-key").value = data.claudeKey || "";
-  $("openai-key").value = data.openaiKey || "";
-
-  const provider = data.aiProvider || "gemini";
-  const radio = document.querySelector(`input[name="ai-provider"][value="${provider}"]`);
-  if (radio) radio.checked = true;
-
-  showAiKeyField(provider);
   updateStatusDot(data);
 });
-
-// ─── Provider radio switch ────────────────────────────────────────────────────
-
-document.querySelectorAll('input[name="ai-provider"]').forEach((radio) => {
-  radio.addEventListener("change", () => showAiKeyField(radio.value));
-});
-
-function showAiKeyField(provider) {
-  document.querySelectorAll(".ai-key-field").forEach((el) => el.classList.add("hidden"));
-  const field = $(`field-${provider}`);
-  if (field) field.classList.remove("hidden");
-}
 
 // ─── Token visibility toggle ──────────────────────────────────────────────────
 
@@ -48,20 +27,20 @@ $("toggle-token").addEventListener("click", () => {
 // ─── Save ─────────────────────────────────────────────────────────────────────
 
 $("save-btn").addEventListener("click", () => {
-  const provider = document.querySelector('input[name="ai-provider"]:checked')?.value || "gemini";
-
   const data = {
     githubToken: $("github-token").value.trim(),
     githubRepo: $("github-repo").value.trim(),
     githubBranch: $("github-branch").value.trim() || "main",
-    aiProvider: provider,
-    geminiKey: $("gemini-key").value.trim(),
-    claudeKey: $("claude-key").value.trim(),
-    openaiKey: $("openai-key").value.trim(),
   };
 
   if (!data.githubToken || !data.githubRepo) {
     showFeedback("GitHub token and repo are required.", "err");
+    return;
+  }
+
+  const repoParts = data.githubRepo.split("/");
+  if (repoParts.length !== 2 || !repoParts[0] || !repoParts[1]) {
+    showFeedback("Repo must be in username/repo format.", "err");
     return;
   }
 
@@ -79,15 +58,13 @@ $("save-btn").addEventListener("click", () => {
 
 function updateStatusDot(data) {
   const dot = $("status-dot");
-  const hasGitHub = data.githubToken && data.githubRepo;
-  const provider = data.aiProvider || "gemini";
-  const keyMap = { gemini: "geminiKey", claude: "claudeKey", openai: "openaiKey" };
-  const hasAi = !!data[keyMap[provider]];
+  const hasToken = !!data.githubToken;
+  const hasRepo = !!data.githubRepo;
 
-  if (hasGitHub && hasAi) {
+  if (hasToken && hasRepo) {
     dot.className = "status-dot ok";
     dot.title = "Configured and ready";
-  } else if (hasGitHub || hasAi) {
+  } else if (hasToken || hasRepo) {
     dot.className = "status-dot warn";
     dot.title = "Partially configured";
   } else {
@@ -95,6 +72,44 @@ function updateStatusDot(data) {
     dot.title = "Not configured";
   }
 }
+
+// ─── Test Connection ──────────────────────────────────────────────────────────
+
+$("test-btn").addEventListener("click", async () => {
+  const token = $("github-token").value.trim();
+  const repo = $("github-repo").value.trim();
+
+  if (!token || !repo) {
+    showFeedback("Enter token and repo first.", "err");
+    return;
+  }
+
+  $("test-btn").disabled = true;
+  showFeedback("Testing…", "");
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json",
+      },
+    });
+    if (res.ok) {
+      showFeedback("Connection successful ✓", "ok");
+    } else if (res.status === 401) {
+      showFeedback("Invalid token.", "err");
+    } else if (res.status === 404) {
+      showFeedback("Repo not found or no access.", "err");
+    } else {
+      showFeedback(`GitHub error: ${res.status}`, "err");
+    }
+  } catch {
+    showFeedback("Network error.", "err");
+  }
+
+  $("test-btn").disabled = false;
+  setTimeout(() => showFeedback("", ""), 4000);
+});
 
 // ─── Feedback ─────────────────────────────────────────────────────────────────
 
