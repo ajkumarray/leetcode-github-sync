@@ -85,6 +85,7 @@ async function listGitHubFolder(config, folderPath) {
   });
 
   if (res.status === 404) return []; // Folder doesn't exist yet
+  if (res.status === 401) throw new Error("GitHub token expired or invalid. Update it in the extension popup.");
   if (!res.ok) throw new Error(`GitHub list error: ${res.status}`);
   return res.json();
 }
@@ -122,6 +123,7 @@ async function createOrUpdateFile(config, filePath, content, commitMessage) {
     body: JSON.stringify(body),
   });
 
+  if (res.status === 401) throw new Error("GitHub token expired or invalid. Update it in the extension popup.");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(`GitHub write error: ${res.status} — ${err.message || "Unknown"}`);
